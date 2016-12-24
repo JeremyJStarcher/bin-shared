@@ -1,0 +1,26 @@
+# This is Jeremy's custom theme
+
+override_git_prompt_colors() {
+  Time="\$(date +%H:%M)"
+  shortPwd="$(gp_truncate_pwd)"
+
+  function prompt_callback {
+    gp_set_window_title "$shortPwd"
+  }
+
+  if [ -n "$SSH_CLIENT" ]; then
+    USERHINT="[${Blue}\\u${White}@${BoldBlue}\\h] "
+  else
+    USERHINT=""
+  fi
+
+  local gp_end=" \n${USERHINT}${White}${Time}${ResetColor}"
+
+  GIT_PROMPT_START_USER="_LAST_COMMAND_INDICATOR_ ${Yellow}${shortPwd}${ResetColor}"
+  GIT_PROMPT_START_ROOT="${GIT_PROMPT_START_USER}"
+  GIT_PROMPT_END_USER="${gp_end} $ "
+  GIT_PROMPT_END_ROOT="${gp_end} # "
+}
+
+reload_git_prompt_colors 'JeremyStarcher'
+#
