@@ -248,9 +248,7 @@ if [ -x /usr/bin/mint-fortune ]; then
      /usr/bin/mint-fortune
 fi
 
-
 unset color_prompt force_color_prompt
-
 
 # Add OS-specific directories.
 export PATH=${PATH}:${HOME}/bin-shared/$(uname)
