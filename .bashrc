@@ -254,3 +254,7 @@ unset color_prompt force_color_prompt
 
 # Add OS-specific directories.
 export PATH=${PATH}:${HOME}/bin-shared/$(uname)
+
+
+GIT_PROMPT_ONLY_IN_REPO=1
+source ~/bin-shared/bin/bash-git-prompt/gitprompt.sh
