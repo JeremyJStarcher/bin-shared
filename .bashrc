@@ -461,12 +461,19 @@ sed "s/$1/${SMSO}\0${RMSO}/gI" | more
 
 # Usage: repeat PERIOD COMMAND
 function repeat() {
-    local period
-    period=$1; shift;
-    while (true); do
-        eval "$@";
-    sleep $period;
-    done
+
+  if [ -z "$1" ]; then
+    echo "usage:"
+    echo "  repeat <count> <command>"
+    return
+  fi
+
+  local period
+  period=$1; shift;
+  while (true); do
+    eval "$@";
+  sleep $period;
+  done
 }
 
 function ds()
