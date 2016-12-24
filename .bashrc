@@ -266,6 +266,7 @@ netinfo () {
   # echo "${myip}"
 
   curl ipinfo.io
+  curl ifconfig.co/json
 
   echo "---------------------------------------------------"
 }
@@ -312,7 +313,6 @@ function lw() {
   fi
 }
 
-
 uinf() {
   echo "current directory="`pwd`;
   echo "you are="`whoami`
@@ -320,7 +320,6 @@ uinf() {
   # tree -L 1 -h $HOME;
   echo "terminal="`tty`;
 }
-
 
 #top10 largest in directory
 t10(){
@@ -393,7 +392,6 @@ miso() {
   fi
 }
 
-
 function apt-history(){
       case "$1" in
         install)
@@ -413,8 +411,6 @@ function apt-history(){
               ;;
       esac
 }
-
-
 
 # Counts files, subdirectories and directory size and displays details
 # about files depending on the available space
@@ -437,7 +433,6 @@ function lls () {
         ls -hlAF --full-time
     fi
 }
-
 
 function fstr()
 {
