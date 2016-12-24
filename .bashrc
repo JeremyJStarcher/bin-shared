@@ -510,6 +510,14 @@ function mediainfo() {
     fi
 }
 
-GIT_PROMPT_THEME=Default
-GIT_PROMPT_ONLY_IN_REPO=1
+# GIT_PROMPT_START="_LAST_COMMAND_INDICATOR_ ${Yellow}${PathShort}${ResetColor}"
+# if ! [ $(id -u) = 0 ]; then
+#   GIT_PROMPT_END=" \n${Red}[${USER}@${HOSTNAME%%.*}]${ResetColor} ${Time12a} # "
+# else
+#   GIT_PROMPT_END=" \n${White}[${USER}@${HOSTNAME%%.*}] ${Time12a}${ResetColor} $ "
+# fi
+
+
+GIT_PROMPT_THEME=JeremyStarcher
+GIT_PROMPT_ONLY_IN_REPO=0
 source ~/bin-shared/bin/bash-git-prompt/gitprompt.sh
