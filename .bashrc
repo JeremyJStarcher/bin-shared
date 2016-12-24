@@ -261,9 +261,12 @@ netinfo () {
   /sbin/ifconfig | awk /'inet addr/ {print $4}'
   /sbin/ifconfig | awk /'HWaddr/ {print $4,$5}'
 
-  myip="External IP not available because lynx is not installed"
-  which lynx &&  myip=`lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | sed '/^$/d; s/^[ ]*//g; s/[ ]*$//g' `
-  echo "${myip}"
+  # myip="External IP not available because lynx is not installed"
+  # which lynx &&  myip=`lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | sed '/^$/d; s/^[ ]*//g; s/[ ]*$//g' `
+  # echo "${myip}"
+
+  curl ipinfo.io
+
   echo "---------------------------------------------------"
 }
 
@@ -509,6 +512,7 @@ function mediainfo() {
         echo "ERROR: Not a supported file type."
     fi
 }
+
 
 # GIT_PROMPT_START="_LAST_COMMAND_INDICATOR_ ${Yellow}${PathShort}${ResetColor}"
 # if ! [ $(id -u) = 0 ]; then
