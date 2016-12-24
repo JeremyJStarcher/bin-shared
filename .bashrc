@@ -521,3 +521,7 @@ function mediainfo() {
 GIT_PROMPT_THEME=JeremyStarcher
 GIT_PROMPT_ONLY_IN_REPO=1
 source ~/bin-shared/bin/bash-git-prompt/gitprompt.sh
+
+
+export VISUAL=vim
+export EDITOR="$VISUAL"
