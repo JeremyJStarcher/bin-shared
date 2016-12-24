@@ -123,3 +123,6 @@ fi
 if [ -x /usr/bin/mint-fortune ]; then
      /usr/bin/mint-fortune
 fi
+
+# Add OS-specific directories.
+export PATH=${PATH}:${HOME}/bin-shared/$(uname)
