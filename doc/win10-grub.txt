@@ -1,0 +1,56 @@
+grub-install: warning: this GPT partition label contains no BIOS Boot Partition
+2016-07-23
+
+    sysadmin bash 
+
+grub-install: warning: this GPT partition label contains no BIOS Boot Partition; embedding won’t be possible.
+
+Solution: create a little separate partition and set its flag to “bios_grub”.
+
+In the following example, I add partition 5 and set flag bios_grub with parted:
+
+root@i7d9:~# parted /dev/sdd
+
+Using /dev/sdd
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) print
+Model: ATA Samsung SSD 840 (scsi)
+Disk /dev/sdd: 500GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End    Size    File system  Name              Flags
+ 1      1049kB  107GB  107GB   ext4         Linux filesystem
+ 2      107GB   215GB  107GB   ext4         root2
+ 3      215GB   249GB  34.4GB               Linux swap
+ 4      249GB   464GB  215GB   ext4         Linux filesystem
+ 5      464GB   464GB  500MB   ext4         bios_grub_boot
+
+
+(parted) set 5 bios_grub on
+
+
+(parted) print
+Model: ATA Samsung SSD 840 (scsi)
+Disk /dev/sdd: 500GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End    Size    File system  Name              Flags
+ 1      1049kB  107GB  107GB   ext4         Linux filesystem
+ 2      107GB   215GB  107GB   ext4         root2
+ 3      215GB   249GB  34.4GB               Linux swap
+ 4      249GB   464GB  215GB   ext4         Linux filesystem
+ 5      464GB   464GB  500MB   ext4         bios_grub_boot    bios_grub
+
+
+(parted) exit
+
+
+~# grub-install /dev/sdd
+
+Installing for i386-pc platform.
+Installation finished. No error reported.
+
