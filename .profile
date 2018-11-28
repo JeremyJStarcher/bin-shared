@@ -21,6 +21,12 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+
 NPM_PACKAGES="${HOME}/.npm-packages"
 NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 PATH="$NPM_PACKAGES/bin:$PATH"
@@ -32,3 +38,4 @@ MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
 export NVM_DIR="/home/jjs/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 export UECIDE=/home/jjs/.uecide
+
