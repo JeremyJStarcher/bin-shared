@@ -531,3 +531,15 @@ source ~/bin-shared/bin/bash-git-prompt/gitprompt.sh
 
 export VISUAL=vim
 export EDITOR="$VISUAL"
+
+if hash neofetch 2>/dev/null; then
+    neofetch
+else
+	# Fall back onto screen fetch if we must.
+	if hash screenfetch 2>/dev/null; then
+		screenfetch
+	else
+		echo Did not find neofetch or screenfetch
+	fi
+fi
+
