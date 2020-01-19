@@ -532,6 +532,9 @@ source ~/bin-shared/bin/bash-git-prompt/gitprompt.sh
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
+# Display a much more detailed info about the system
+inxi -F
+
 if hash neofetch 2>/dev/null; then
     neofetch
 else
