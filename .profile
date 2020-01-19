@@ -40,4 +40,4 @@ export NVM_DIR="/home/jjs/.nvm"
 export UECIDE=/home/jjs/.uecide
 
 # Swap the escape and caps lock
-setxkbmap -option caps:swapescape
+# setxkbmap -option caps:swapescape
