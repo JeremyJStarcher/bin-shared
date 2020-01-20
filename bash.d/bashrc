@@ -2,6 +2,8 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+BASH_ROOT=$HOME/bin-shared/bash.d
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -224,14 +226,11 @@ esac
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+if [ -f ${BASH_ROOT}/bash_aliases ]; then
+    . ${BASH_ROOT}/bash_aliases
 fi
+
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -253,267 +252,6 @@ unset color_prompt force_color_prompt
 # Add OS-specific directories.
 export PATH=${PATH}:${HOME}/bin-shared/$(uname)
 
-#netinfo - shows network information for your system
-netinfo () {
-  echo "--------------- Network Information ---------------"
-  /sbin/ifconfig | awk /'inet addr/ {print $2}'
-  /sbin/ifconfig | awk /'Bcast/ {print $3}'
-  /sbin/ifconfig | awk /'inet addr/ {print $4}'
-  /sbin/ifconfig | awk /'HWaddr/ {print $4,$5}'
-
-  # myip="External IP not available because lynx is not installed"
-  # which lynx &&  myip=`lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | sed '/^$/d; s/^[ ]*//g; s/[ ]*$//g' `
-  # echo "${myip}"
-
-  curl ipinfo.io
-  curl ifconfig.co/json
-
-  echo "---------------------------------------------------"
-}
-
-
-# Extract various compression formats
-extract () {
-     if [ -f $1 ] ; then
-         case $1 in
-             *.tar.bz2)   tar xjf $1;;
-             *.tar.gz)    tar xzf $1;;
-             *.bz2)       bunzip2 $1;;
-             *.rar)       rar x $1;;
-             *.gz)        gunzip $1;;
-             *.tar)       tar xf $1;;
-             *.tbz2)      tar xjf $1;;
-             *.tgz)       tar xzf $1;;
-             *.zip)       unzip $1;;
-             *.Z)         uncompress $1;;
-             *.7z)        7z x $1;;
-             *)           echo "'$1' cannot be extracted via extract()";;
-         esac
-     else
-         echo "'$1' is not a valid file"
-     fi
-}
-
-# Runs alias before running sudo, somehow preserving all your alias bindings in
-# the sudo command. So if I did sudo tf /var/log/file, it would still work even
-# though root doesn't have my alias file.
-# alias sudo='A=`alias` sudo '
-
-# Preserves my env variables when I switch user. Useful because it includes my
-# prompt, which flashes red when I'm root. Sometimes I don't want it so I fall
-# back to /bin/su to ignore the alias.
-# alias su='su -m'
-
-# Use like `lw ls`
-function lw() {
-  if [ $# -gt 0 ] ; then
-    for bin in $@ ; do ls -lh `which $bin` ; done
-  else
-    echo "lw (ls which) requires more than 0 arguments"
-  fi
-}
-
-uinf() {
-  echo "current directory="`pwd`;
-  echo "you are="`whoami`
-  echo "groups in="`id -n -G`;
-  # tree -L 1 -h $HOME;
-  echo "terminal="`tty`;
-}
-
-#top10 largest in directory
-t10(){
-  pwd&&du -ab $1|sort -n -r|head -n 10
-}
-
-#top10 apparent size
-t10a(){
-  pwd&&du -ab --apparent-size $1|sort -n -r|head -n 10
-}
-
-#system roundup
-sys(){
-  if [ `id -u` -ne 0 ]; then echo "you are not root"&&exit;fi;
-  uname -a
-  echo "runlevel" `runlevel`
-  uptime
-  last|head -n 5;
-  who;
-  echo "============= CPUs ============="
-  grep "model name" /proc/cpuinfo #show CPU(s) info
-  cat /proc/cpuinfo | grep 'cpu MHz'
-  echo ">>>>>current process"
-  pstree
-  echo "============= MEM ============="
-  #KiB=`grep MemTotal /proc/meminfo | tr -s ' ' | cut -d' ' -f2`
-  #MiB=`expr $KiB / 1024`
-  #note various mem not accounted for, so round to appropriate sizeround=32
-  #echo "`expr \( \( $MiB / $round \) + 1 \) \* $round` MiB"
-  # free -otm;
-  echo "============ NETWORK ============"
-  ip link show
-  /sbin/ifconfig | awk /'inet addr/ {print $2}'
-  /sbin/ifconfig | awk /'Bcast/ {print $3}'
-  /sbin/ifconfig | awk /'inet addr/ {print $4}'
-  /sbin/ifconfig | awk /'HWaddr/ {print $4,$5}'
-  echo "============= DISKS =============";
-  df -h;
-  echo "============= MISC =============="
-  echo "==<kernel modules>=="
-  lsmod|column -t|awk '{print $1}';
-  echo "=======<pci>========"
-  lspci -tv;
-  echo "=======<usb>======="
-  lsusb;
-}
-
-miso() {
-  _mountpoint="/tmp/iso"
-  if [ -z "$1" ]; then
-    echo "usage:"
-    echo "  miso file.iso to   mount FILE.iso at   '$_mountpoint'"
-    echo "  miso -u       to unmount FILE.iso from '$_mountpoint'"
-    echo "  Where FILE.iso is the name, or path and name, of the iso file to mount"
-  elif [ "$1" = "-u" ]; then
-    sudo umount "$_mountpoint"
-    echo "'$_mountpoint' unmounted."
-    # if you don't want to verify if the file name ends in a .iso
-    # (case insensitive, -i) remove
-    # && [ ! -z "`echo "$1" | grep -i .iso$`" ]
-  elif [ -r "$1" ] && [ ! -z "`echo "$1" | grep -i .iso$`" ]; then
-    if [ `ls "$_mountpoint" | wc -w` -ne 0 ]; then
-      echo -e "error: '$_mountpoint' is not empty, \ntry miso -u to unmount it"
-    else
-      sudo mount -o loop "$1" "$_mountpoint"
-      echo -e "'$1'\n  is mounted at\n'$_mountpoint'"
-    fi
-  else
-    echo "error: '$1' is not a readable *.iso file."
-  fi
-}
-
-function apt-history(){
-      case "$1" in
-        install)
-              cat /var/log/dpkg.log | grep 'install '
-              ;;
-        upgrade|remove)
-              cat /var/log/dpkg.log | grep $1
-              ;;
-        rollback)
-              cat /var/log/dpkg.log | grep upgrade | \
-                  grep "$2" -A10000000 | \
-                  grep "$3" -B10000000 | \
-                  awk '{print $4"="$5}'
-              ;;
-        *)
-              cat /var/log/dpkg.log
-              ;;
-      esac
-}
-
-# Counts files, subdirectories and directory size and displays details
-# about files depending on the available space
-function lls () {
-    # count files
-    echo -n "<`find . -maxdepth 1 -mindepth 1 -type f | wc -l | tr -d '[:space:]'` files>"
-    # count sub-directories
-    echo -n " <`find . -maxdepth 1 -mindepth 1 -type d | wc -l | tr -d '[:space:]'` dirs/>"
-    # count links
-    echo -n " <`find . -maxdepth 1 -mindepth 1 -type l | wc -l | tr -d '[:space:]'` links@>"
-    # total disk space used by this directory and all subdirectories
-    echo " <~`du -sh . 2> /dev/null | cut -f1`>"
-    ROWS=`stty size | cut -d' ' -f1`
-    FILES=`find . -maxdepth 1 -mindepth 1 |
-    wc -l | tr -d '[:space:]'`
-    # if the terminal has enough lines, do a long listing
-    if [ `expr "${ROWS}" - 6` -lt "${FILES}" ]; then
-        ls
-    else
-        ls -hlAF --full-time
-    fi
-}
-
-function fstr()
-{
-    OPTIND=1
-    local case=""
-    local usage="fstr: find string in files.
-Usage: fstr [-i] \"pattern\" [\"filename pattern\"] "
-    while getopts :it opt
-    do
-        case "$opt" in
-        i) case="-i " ;;
-        *) echo "$usage"; return;;
-        esac
-    done
-    shift $(( $OPTIND - 1 ))
-    if [ "$#" -lt 1 ]; then
-        echo "$usage"
-        return;
-    fi
-    local SMSO=$(tput smso)
-    local RMSO=$(tput rmso)
-    find . -type f -name "${2:-*}" -print0 | xargs -0 grep -sn ${case} "$1" 2>&- | \
-sed "s/$1/${SMSO}\0${RMSO}/gI" | more
-}
-
-
-# Usage: repeat PERIOD COMMAND
-function repeat() {
-
-  if [ -z "$1" ]; then
-    echo "usage:"
-    echo "  repeat <count> <command>"
-    return
-  fi
-
-  local period
-  period=$1; shift;
-  while (true); do
-    eval "$@";
-  sleep $period;
-  done
-}
-
-function ds()
-{
-    echo "size of directories in MB"
-    if [ $# -lt 1 ] || [ $# -gt 2 ]; then
-        echo "you did not specify a directy, using pwd"
-        DIR=$(pwd)
-        find $DIR -maxdepth 1 -type d -exec du -sm \{\} \; | sort -nr
-    else
-        find $1 -maxdepth 1 -type d -exec du -sm \{\} \; | sort -nr
-    fi
-}
-
-# show the 10 largest files sorted and in human readable format
-# duf *
-function duf {
-du -sk "$@" | sort -n | while read size fname;
-	do for unit in k M G T P E Z Y;
-		do if [ $size -lt 1024 ];
-		then echo -e "${size}${unit}\t${fname}";
-			break; fi; size=$((size/1024));
-		done;
-	done | tail -n 10 | tac
-}
-
-# Get media metadata easily
-######   $1 = media file name
-function mediainfo() {
-    EXT=`echo "${1##*.}" | sed 's/\(.*\)/\L\1/'`
-    if [ "$EXT" == "mp3" ]; then
-        id3v2 -l "$1"
-        echo
-        mp3gain -s c "$1"
-    elif [ "$EXT" == "flac" ]; then
-        metaflac --list --block-type=STREAMINFO,VORBIS_COMMENT "$1"
-    else
-        echo "ERROR: Not a supported file type."
-    fi
-}
 
 
 # GIT_PROMPT_START="_LAST_COMMAND_INDICATOR_ ${Yellow}${PathShort}${ResetColor}"
@@ -528,19 +266,23 @@ GIT_PROMPT_THEME=JeremyStarcher
 GIT_PROMPT_ONLY_IN_REPO=1
 source ~/bin-shared/bin/bash-git-prompt/gitprompt.sh
 
-
-export VISUAL=vim
-export EDITOR="$VISUAL"
+if  [ -x "$(command -v vim)" ]; then
+  export VISUAL=vim
+  export EDITOR="$VISUAL"
+fi
 
 # Display a much more detailed info about the system
-inxi -F
+if  [ -x "$(command -v inxi)" ]; then
+  inxi -F
+fi
 
-if hash neofetch 2>/dev/null; then
+
+if  [ -x "$(command -v neofetch)" ]; then
     neofetch
 else
 	# Fall back onto screen fetch if we must.
-	if hash screenfetch 2>/dev/null; then
-		screenfetch
+  if  [ -x "$(command -v screenfetch)" ]; then
+ 		screenfetch
 	else
 		echo Did not find neofetch or screenfetch
 	fi
