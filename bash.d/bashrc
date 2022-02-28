@@ -184,7 +184,7 @@ case "$OSTYPE" in
     export LANGUAGE="en_US:en"
 
     # Set PATH for Linux
-    export PATH=/usr/local/bin:$PATH:/opt/local/bin
+    export PATH=/usr/local/bin:$PATH:/opt/local/bin:${HOME}/bin
 
     # Linux: enable color support of ls and also add handy aliases
     if [ -x /usr/bin/dircolors ]; then
