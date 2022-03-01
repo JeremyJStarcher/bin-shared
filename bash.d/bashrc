@@ -227,8 +227,8 @@ esac
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 
-if [ -f ${BASH_ROOT}/bash_aliases ]; then
-    . ${BASH_ROOT}/bash_aliases
+if [ -f ${BASH_ROOT}/bash_aliases.sh ]; then
+    . ${BASH_ROOT}/bash_aliases.sh
 fi
 
 
@@ -253,7 +253,6 @@ unset color_prompt force_color_prompt
 export PATH=${PATH}:${HOME}/bin-shared/$(uname)
 
 
-
 # GIT_PROMPT_START="_LAST_COMMAND_INDICATOR_ ${Yellow}${PathShort}${ResetColor}"
 # if ! [ $(id -u) = 0 ]; then
 #   GIT_PROMPT_END=" \n${Red}[${USER}@${HOSTNAME%%.*}]${ResetColor} ${Time12a} # "
@@ -275,7 +274,6 @@ fi
 if  [ -x "$(command -v inxi)" ]; then
   inxi -F
 fi
-
 
 if  [ -x "$(command -v neofetch)" ]; then
     neofetch

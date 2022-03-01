@@ -259,3 +259,23 @@ function mediainfo() {
         echo "ERROR: Not a supported file type."
     fi
 }
+
+alias aptup='sudo apt update && sudo apt upgrade'
+
+up() {
+  local d=""
+  local limit="$1"
+
+  # default to a limit of 1
+  if [ -z "$limit" ] || [ "$limit" -le 0 ]; then
+    limit=1
+  fi
+  for ((i=1;i<=limit;i++)); do
+    d="../$d"
+  done
+  
+  # perform CD. Show error if it fails.
+  if ! cd "$d"; then
+    echo "Couldn't go up $limit dirs.";
+  fi
+}
