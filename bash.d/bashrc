@@ -154,6 +154,7 @@ case "$OSTYPE" in
 
     # Set PATH for Linux
     export PATH=/usr/local/bin:$PATH:/opt/local/bin:${HOME}/bin
+    export PATH=$PATH:${HOME}/.local/share/flatpak/exports/bin
 
     # Linux: enable color support of ls and also add handy aliases
     if [ -x /usr/bin/dircolors ]; then
