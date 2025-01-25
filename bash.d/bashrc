@@ -219,8 +219,22 @@ fi
 
 unset color_prompt force_color_prompt
 
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
+
 # Add OS-specific directories.
 export PATH=${PATH}:${HOME}/bin-shared/$(uname)
+export PATH=${PATH}:${HOME}/shared/bin
 
 
 # GIT_PROMPT_START="_LAST_COMMAND_INDICATOR_ ${Yellow}${PathShort}${ResetColor}"
@@ -241,9 +255,9 @@ if  [ -x "$(command -v vim)" ]; then
 fi
 
 # Display a much more detailed info about the system
-if  [ -x "$(command -v inxi)" ]; then
-    inxi -F
-fi
+#if  [ -x "$(command -v inxi)" ]; then
+#    inxi -F
+#fi
 
 if  [ -x "$(command -v fastfetch)" ]; then
     fastfetch
@@ -259,6 +273,23 @@ else
         fi
     fi
 fi
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 
 # PS1="\h_\u[\!]\$ "
 
@@ -278,3 +309,12 @@ export GIT_PS1_SHOWUNTRACKEDFILES=1
 # only do this for interactive sessions
 # source ~/.git_prompt.sh
 PS1="$Red\u$Blue@$Red\h$Green \w$Reset \$(__git_ps1 ' (%s)')$Blue[\!]\n\$ $Reset"
+
+export PICO_SDK_PATH=${HOME}/shared/bin/pico/pico-sdk
+export PICO_EXAMPLES_PATH=${HOME}//shared/bin/pico/pico-examples
+export PICO_EXTRAS_PATH=${HOME}//shared/bin/pico/pico-extras
+export PICO_PLAYGROUND_PATH=${HOME}//shared/bin/pico/pico-playground
+export PICO_SDK_PATH=${HOME}//shared/bin/pico/pico-sdk
+export PICO_EXAMPLES_PATH=${HOME}//shared/bin/pico/pico-examples
+export PICO_EXTRAS_PATH=${HOME}//shared/bin/pico/pico-extras
+export PICO_PLAYGROUND_PATH=${HOME}//shared/bin/pico/pico-playground
